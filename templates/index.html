@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Plant MOnitoring System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+
+</head>
+<body>
+
+    <img class="image" src="{{ url_for('static', filename='images/background.png') }}" alt="">
+    <nav class="nav">
+
+       <div id="nav-i-1" class="nav_i">
+        <i class="fa-solid fa-user"  style="color: #000000;"></i>
+        <p>Profile</p>
+ 
+       </div>
+
+       <div id="nav-i-2" class="nav_i">
+        <i class="fa-solid fa-house" style="color: #000000;" ></i>
+        <p>Home</p>
+ 
+       </div>
+
+       <div id="nav-i-3" class="nav_i">
+        <i class="fa-solid fa-right-from-bracket"></i>
+       </div>
+    </nav>
+    <main class="main">
+
+      <h1 class="Heading">Smart Monitering System</h1>
+        <section id="sec-1" class="section">
+
+            <div class="data">
+
+                <div class="c_data">
+                    <i class="fa-solid fa-temperature-high" style="color: #ff0000;"></i>
+                     <h3>Temperature</h3>
+                    <div id="temperature">
+                        <h3 id="#autorefresh">
+                            NAA
+                        </h3>
+                    </div>
+                    
+                </div>
+                <div class="c_data">
+                    <i class="fa-solid fa-droplet" style="color: #0008ff;"></i>
+                    <h3>Humidity</h3>
+                    <h3 id="#Humidity">
+                        NAA
+                    </h3>
+                </div>
+                <div class="c_data">
+                    <i class="fa-solid fa-glass-water-droplet" style="color: #00f7ff;"></i>
+                    <h3>Soil Moister</h3>
+                    <h3 id="#Mois">
+                        NAA
+                    </h3>
+                </div>
+            </div>
+                <canvas class="myChart" id="myChart" style="max-width:400px;"></canvas> 
+        </section>
+        <section id="sec-2" class="section">
+
+            <div>
+
+              <h2>Uv Level</h2>
+                <canvas id="donut" style="max-width:250px;"></canvas> <br>
+                <h3 id="1">
+
+                </h3>
+ 
+            </div>
+            <div>
+              <h2>Air quality Level</h2>
+                <canvas id="dongnut" style="max-width:250px;"></canvas> <br>
+                <h3 id="2">
+                  
+                </h3>
+
+            </div>
+
+            <div>
+
+              <h2>CO2 Level</h2>
+                <canvas id="polar" style="max-width:250px;"></canvas> <br>
+                <h3 id="3">
+                  
+                </h3>
+            </div>
+
+            <div>
+              <h2>Temperature, Humidity and Moisture </h2>
+                <canvas id="myplot" style="max-width:250px;"></canvas> <br>
+                <h3 id="4">
+                  
+                </h3>
+            </div>
+
+            <div>
+              <h2>Rain Fall Level</h2>
+                <canvas id="myPlot" style="max-width:250px;"></canvas><br>
+
+                <h3 id="5">
+                  
+                </h3>
+            </div>
+
+
+        </section>
+    </main>
+    
+<script src="https://kit.fontawesome.com/e19484dcd7.js" crossorigin="anonymous"></script>
+
+<script>
+
+var data=myObj = JSON.parse('{{data|tojson}}');
+const xValues = [10,20,30,40,50,60,70,80,90,100];
+
+new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{ 
+      data: data["Temp_history"],
+      borderColor: "red",
+      fill: false
+    },{
+      data: data["Humi_history"],
+      borderColor: "Blue",
+      fill: false
+    },]
+  },
+  options: {
+    legend: {display: false}
+  }
+});
+
+
+// ==================
+const tem_data = {
+    labels: [
+      'Air Quality',
+      
+    ],
+    datasets: [{
+      label: 'My First Dataset',
+      data: [data.Air_quality,(100-data.Air_quality)],
+      backgroundColor: [
+      'rgb(54, 162, 235)',
+        '#DCDCDC',
+      ],
+      hoverOffset:7
+    }]
+  };
+
+new Chart('dongnut',{
+    type: 'doughnut',
+    data: tem_data,
+  });
+
+// ============================
+
+  const temp_data = {
+    labels: [
+      'UV Level',
+    ],
+    datasets: [{
+      label: 'My First Dataset',
+      data: [data.UV_Level,100-data.UV_Level],
+      backgroundColor: [
+      'rgb(255, 0, 0)',
+        '#DCDCDC',
+      ],
+      hoverOffset: 4
+    }]
+  };
+
+
+new Chart('donut',{
+    type: 'doughnut',
+    data: temp_data,
+  });
+
+//   =====================================
+
+
+const p_data = {
+    labels: [
+      'CO2 Level',
+    ],
+    datasets: [{
+      label: 'My First Dataset',
+      data: [data.Co2_level,100-data.Co2_level],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+      ]
+    }]
+};
+
+new Chart('polar',{
+    type: 'polarArea',
+    data: p_data,
+    options: {}
+  });
+
+
+// ========================================
+const mp_data = {
+    labels: [
+      'Rain Level',
+    ],
+    datasets: [{
+      label: 'My First Dataset',
+      data: [data.Rain_level,data.Rain_level-100],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(75, 192, 192)'
+      ]
+    }]
+};
+
+new Chart('myPlot',{
+    type: 'polarArea',
+    data: mp_data,
+    options: {}
+  });
+
+
+const m_data = {
+    labels: [
+      'Temperature',
+      'Humidity',
+      'Soil Moisture',
+    ],
+    datasets: [{
+      label: 'My First Dataset',
+      data: [data.Temperature,data.Humidity,data.Moisture],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(75, 192, 192)',
+        'rgb(255, 205, 86)',
+      ]
+    }]
+};
+
+new Chart('myplot',{
+    type: 'polarArea',
+    data: m_data,
+    options: {}
+  });
+
+
+ // Replace with your API endpoint
+
+
+const AUTOREFRESH_ID = "#autorefresh";
+const DATAURL = "/get_data"; 
+
+
+setInterval(() => {
+  fetch(DATAURL)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      const temperature = data.Temperature;
+      const temperatureElement = document.getElementById(AUTOREFRESH_ID);
+      if (temperatureElement) {
+        temperatureElement.textContent = temperature + " C";
+         // Clear content if needed
+      } else {
+        console.warn("`autorefresh` element not found in DOM");
+      }
+    })
+    .catch(error => {
+      console.error("Error fetching data:", error);
+      // Handle errors gracefully, e.g., display an error message to the user
+    });
+}, 5000);
+
+
+
+
+</script>
+
+<script>
+const AUTOREFRESH_ELEMENT_ID = "#Humidity";
+const DATA_URL = "/get_data"; 
+
+setInterval(() => {
+  fetch(DATA_URL)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      const Humidi = data.Humidity;
+      const temperatureElement = document.getElementById(AUTOREFRESH_ELEMENT_ID);
+      if (temperatureElement) {
+        temperatureElement.textContent = Humidi + "%";
+         // Clear content if needed
+      } else {
+        console.warn("`autorefresh` element not found in DOM");
+      }
+    })
+    .catch(error => {
+      console.error("Error fetching data:", error);
+      // Handle errors gracefully, e.g., display an error message to the user
+    });
+}, 5000);
+
+</script>
+
+<script>
+
+const ELEMENT_ID = "#Mois";
+const URL = "/get_data"; 
+    
+    setInterval(() => {
+      fetch(URL)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const Mois = data.Moisture;
+          const temperatureElement = document.getElementById(ELEMENT_ID);
+          if (temperatureElement) {
+            temperatureElement.textContent = Mois + "%";
+             // Clear content if needed
+          } else {
+            console.warn("`autorefresh` element not found in DOM");
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
+          // Handle errors gracefully, e.g., display an error message to the user
+        });
+    }, 5000);
+</script>
+
+
+<script>
+  setInterval(function() {
+    let getData = $.getJSON('/get_data');
+    getData.done(function(result) {
+        console.log(result)
+        const xvalues = [10,20,30,40,50,60,70,80,90,100];
+        var temp = result.Temp_history;
+        var humi = result.Humi_history;
+        var mois = result.Mois_histroy;
+        var ctx = document.getElementById("myChart");
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels:xvalues,
+                datasets: [{
+                    data: temp,
+                    borderColor: "red",
+                    fill: false
+                }, {
+      data: humi,
+      borderColor: "Blue",
+      fill: false
+    }]
+
+  },
+  options: {
+    legend: {display: false}
+            }
+        });
+    });
+},5000) 
+</script>
+
+<script>
+  setInterval(function() {
+    let getData = $.getJSON('/get_data');
+    getData.done(function(result) {
+      
+        const xvalues = [
+      'Temperature',
+      'Humidity',
+      'Soil Moisture',
+    ];
+    console.log(getData);
+        var temp = result.Temperature;
+        var humi = result.Humidity;
+        var mois = result.Moisture;
+        var ctx = document.getElementById("myplot");
+        var myChart = new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels:xvalues,
+                datasets: [{
+                    data: [temp,humi,mois],
+                    backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(75, 192, 192)',
+        'rgb(255, 205, 86)',
+      ],
+                }, ]
+            }
+        });
+    });
+},5000) 
+</script>
+
+
+<script>
+  setInterval(function() {
+    let getData = $.getJSON('/get_data');
+    getData.done(function(result) {
+      
+        const xvalues = [
+      'Rain Fall Level',
+    ];
+    console.log(getData);
+        var Rainfall = result.Rain_level;
+        var ctx = document.getElementById("myPlot");
+        var myChart = new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels:xvalues,
+                datasets: [{
+                    data: [Rainfall,Rainfall-100],
+                    backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(75, 192, 192)',
+      ],
+                }, ]
+            }
+        });
+    });
+},5000);
+
+</script>
+
+<script>
+  setInterval(function() {
+    let getData = $.getJSON('/get_data');
+    getData.done(function(result) {
+      
+        const xvalues = [
+      'Co2 Level',
+    ];
+    console.log(getData);
+        var Co2_l = result.Co2_level;
+        var ctx = document.getElementById("polar");
+        var myChart = new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels:xvalues,
+                datasets: [{
+                    data: [Co2_l,Co2_l-100],
+                    backgroundColor: [
+        'rgb(255, 99, 132)',
+      ],
+                }, ]
+            }
+        });
+    });
+},5000); 
+
+</script>
+
+
+<script>
+  setInterval(function() {
+    let getData = $.getJSON('/get_data');
+    getData.done(function(result) {
+      
+        const xvalues = [
+      'Uv Level',
+    ];
+    console.log(getData);
+        var Uv_l = result.UV_Level;
+        var ctx = document.getElementById('donut');
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels:xvalues,
+                datasets: [{
+                    data: [Uv_l,100-Uv_l],
+                    backgroundColor: [
+        'rgb(255, 0, 0)',
+        '#DCDCDC',
+      ],
+                }, ]
+            }
+        });
+    });
+},5000); 
+</script>
+
+<script>
+  setInterval(function() {
+    let getData = $.getJSON('/get_data');
+    getData.done(function(result) {
+      
+        const xvalues = [
+      'Air quality Level',
+    ];
+    console.log(getData);
+        var Air_l = result.Air_quality;
+        var ctx = document.getElementById('dongnut');
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels:xvalues,
+                datasets: [{
+                    data: [Air_l,100-Air_l],
+                    backgroundColor: [
+                    'rgb(0, 0, 255)',
+        '#DCDCDC',
+        
+      ],
+                }, ]
+            }
+        });
+    });
+},5000); 
+
+</script>
+
+</body>
+</html>
