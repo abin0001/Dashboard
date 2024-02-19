@@ -4,6 +4,8 @@ import random
 import time
 import random
 import time
+import main
+
 
 app = Flask(__name__)
 
@@ -11,10 +13,12 @@ current_temp = None
 temp_history = []
 humi_history=[]
 mois_history=[]
+
+
 data_dict = {"Temperature": None, "Temp_history": [],"Humidity":None,"Humi_history": [],"Moisture":None,"mois_history": [],"UV_Level": None,"Air_quality":None,"Co2_level":None,"Rain_level":None }
 
-def generate_random_temp():
-    return random.uniform(0,100),random.uniform(0,100),random.uniform(0,100),random.randint(0,100),random.randint(0,100),random.randint(0,100),random.randint(0,100)
+# def generate_random_temp():
+#     return random.uniform(0,100),random.uniform(0,100),random.uniform(0,100),random.randint(0,100),random.randint(0,100),random.randint(0,100),random.randint(0,100)
  
 
 @app.route("/")
@@ -27,7 +31,7 @@ def get_data():
     
     global current_temp, temp_history, data_dict
 
-    current_temp,cur_humi,cur_mois,UV_level,Air_q,Co2_l,Rain_level = generate_random_temp()
+    cur_mois,current_temp,cur_humi,UV_level,Air_q,Co2_l,Rain_level = main.get()
 
     temp_history.append(int(current_temp))
     mois_history.append(int(current_temp))
