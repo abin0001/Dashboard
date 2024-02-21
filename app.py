@@ -27,6 +27,8 @@ def hello_world():
     return render_template("index.html",data=data_dict)
 
 @app.route("/get_data", methods=["GET", "POST"])
+
+
 def get_data():
     
     global current_temp, temp_history, data_dict
